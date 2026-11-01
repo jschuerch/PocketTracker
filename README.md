@@ -7,7 +7,7 @@ A simple iPhone app for tracking personal expenses, built with SwiftUI.
 
 ## Features
 - [ ] Add an expense (title, amount, date, category)
-- [ ] View a list of expenses
+- [x] View a list of expenses (currently sample data)
 - [ ] See totals per category
 - [ ] Save data between app launches
 
