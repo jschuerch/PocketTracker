@@ -1,6 +1,6 @@
 import Foundation
 
-struct Expense {
+struct Expense: Identifiable {
     let id: UUID = UUID()
     var title: String
     var amount: Decimal
@@ -9,5 +9,18 @@ struct Expense {
 }
 
 enum ExpenseCategory: CaseIterable {
-    case food, transport, shopping, housing, entertainment, health, other
+    case food, transport, shopping, housing, entertainment, health, subscription, other
+    
+    var displayName: String {
+        switch self {
+        case .food: "Food"
+        case .transport: "Transport"
+        case .shopping: "Shopping"
+        case .housing: "Housing"
+        case .entertainment: "Entertainment"
+        case .health: "Health"
+        case .subscription: "Subscription"
+        case .other: "Other"
+        }
+    }
 }
