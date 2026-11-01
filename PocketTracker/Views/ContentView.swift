@@ -8,7 +8,7 @@ struct ContentView: View {
             VStack(alignment: .leading) {
 
                 List {
-                    ForEach(groupedByDay(expenses), id: \.day) { group in
+                    ForEach(Expense.groupedByDay(expenses), id: \.day) { group in
                         Section {
                             ForEach(group.expenses) { expense in
                                 HStack(alignment: .center) {
@@ -62,22 +62,6 @@ struct ContentView: View {
             }
             .navigationTitle("Pocket Tracker")
         }
-    }
-
-    func groupedByDay(_ expenses: [Expense]) -> [(
-        day: Date, expenses: [Expense]
-    )] {
-        let expensesByDay = Dictionary(grouping: expenses) {
-            Calendar.current.startOfDay(for: $0.date)
-        }
-
-        let sortedDays = expensesByDay.keys.sorted(by: >)
-        var result: [(day: Date, expenses: [Expense])] = []
-        for day in sortedDays {
-            result.append((day, expensesByDay[day]!))
-        }
-
-        return result
     }
 }
 
