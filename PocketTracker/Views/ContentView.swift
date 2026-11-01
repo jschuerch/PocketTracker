@@ -6,44 +6,48 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Text("Pocket Tracker")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-
-                    Text("Welcome to your personal expense tracker!")
-                }
-                .padding()
 
                 List {
-                    ForEach(expenses) { expense in
-                        HStack(alignment: .center) {
-                            Label(expense.category.displayName, systemImage: expense.category.symbolName)
-                                .labelStyle(.iconOnly)
-                                .frame(width: 35, height: 35)
-                                .foregroundStyle(.white)
-                                .background(expense.category.color, in: RoundedRectangle(cornerRadius: 7))
-                                .font(.headline)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(expense.title)
+                    ForEach(groupedByDay(expenses), id: \.day) { group in
+                        Section {
+                            ForEach(group.expenses) { expense in
+                                HStack(alignment: .center) {
+                                    Label(
+                                        expense.category.displayName,
+                                        systemImage: expense.category.symbolName
+                                    )
+                                    .labelStyle(.iconOnly)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundStyle(.white)
+                                    .background(
+                                        expense.category.color,
+                                        in: RoundedRectangle(cornerRadius: 7)
+                                    )
                                     .font(.headline)
-                            }
 
-                            Spacer()
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(expense.title)
+                                            .font(.headline)
+                                    }
 
-                            VStack(alignment: .trailing, spacing: 4) {
-                                Text(
-                                    expense.amount,
-                                    format: .currency(code: "CHF")
-                                )
-                                Text(
-                                    expense.date,
-                                    format: .dateTime.day().month().hour()
-                                        .minute()
-                                )
-                                .foregroundStyle(.secondary)
+                                    Spacer()
+
+                                    VStack(alignment: .trailing, spacing: 4) {
+                                        Text(
+                                            expense.amount,
+                                            format: .currency(code: "CHF")
+                                        )
+                                        Text(
+                                            expense.date,
+                                            format: .dateTime.hour()
+                                                .minute()
+                                        )
+                                        .foregroundStyle(.secondary)
+                                    }
+                                }
                             }
+                        } header: {
+                            Text(group.day, format: .dateTime.day().month())
                         }
                     }
                 }
@@ -56,7 +60,24 @@ struct ContentView: View {
                 .padding()
 
             }
+            .navigationTitle("Pocket Tracker")
         }
+    }
+
+    func groupedByDay(_ expenses: [Expense]) -> [(
+        day: Date, expenses: [Expense]
+    )] {
+        let expensesByDay = Dictionary(grouping: expenses) {
+            Calendar.current.startOfDay(for: $0.date)
+        }
+
+        let sortedDays = expensesByDay.keys.sorted(by: >)
+        var result: [(day: Date, expenses: [Expense])] = []
+        for day in sortedDays {
+            result.append((day, expensesByDay[day]!))
+        }
+
+        return result
     }
 }
 
