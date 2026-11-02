@@ -1,6 +1,6 @@
 import Foundation
 
-struct Expense: Identifiable {
+struct Expense: Identifiable, Hashable {
     let id: UUID = UUID()
     var title: String
     var amount: Decimal
